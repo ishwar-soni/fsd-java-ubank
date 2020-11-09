@@ -1,6 +1,7 @@
 package com.upgrad.ubank.services;
 
 import com.upgrad.ubank.Account;
+import com.upgrad.ubank.Transaction;
 
 public class AccountServiceImpl implements AccountService {
     //Account array to store account objects for the application, later in the course
@@ -37,5 +38,30 @@ public class AccountServiceImpl implements AccountService {
         temp.setBalance(0);
         accounts[counter++] = temp;
         return true;
+    }
+
+    @Override
+    public Account getAccount(int accountNo) {
+        return null;
+    }
+
+    @Override
+    public Account deposit(int accountNo, int amount) {
+        return null;
+    }
+
+    @Override
+    public Account withdraw(int accountNo, int amount) {
+        return null;
+    }
+
+    @Override
+    public Transaction createTransaction(Transaction transaction) {
+        return null;
+    }
+
+    @Override
+    public Transaction[] getTransactions(int accountNo) {
+        return new Transaction[0];
     }
 }
