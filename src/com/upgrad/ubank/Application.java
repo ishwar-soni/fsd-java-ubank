@@ -2,6 +2,8 @@ package com.upgrad.ubank;
 
 import com.upgrad.ubank.services.AccountService;
 import com.upgrad.ubank.services.AccountServiceImpl;
+import com.upgrad.ubank.services.TransactionService;
+import com.upgrad.ubank.services.TransactionServiceImpl;
 
 import java.util.Scanner;
 
@@ -9,6 +11,7 @@ public class Application {
     private Scanner scan;
 
     private AccountService accountService;
+    private TransactionService transactionService;
 
     //a flag used to check whether a user is logged in or not
     private boolean isLoggedIn;
@@ -16,9 +19,10 @@ public class Application {
     //an attribute to store account no of the logged in user
     private int loggedInAccountNo;
 
-    public Application (AccountService accountService) {
+    public Application (AccountService accountService, TransactionService transactionService) {
         scan = new Scanner(System.in);
         this.accountService = accountService;
+        this.transactionService = transactionService;
         isLoggedIn = false;
         loggedInAccountNo = 0;
     }
@@ -183,7 +187,12 @@ public class Application {
         System.out.println("**Account Statement**");
         System.out.println("*********************");
 
-        System.out.println("Print account statement for account " + loggedInAccountNo);
+        Transaction[] transactions = transactionService.getTransactions(loggedInAccountNo);
+        if (transactions == null) {
+            System.out.println("This feature is not available for mobile");
+        } else {
+            System.out.println("Print account statement for account " + loggedInAccountNo);
+        }
     }
 
     private void logout () {
@@ -198,7 +207,9 @@ public class Application {
 
     public static void main(String[] args) {
         AccountService accountService = new AccountServiceImpl();
-        Application application = new Application(accountService);
+        TransactionServiceImpl transactionService = new TransactionServiceImpl();
+        transactionService.setLoggedInSystem("DESKTOP");
+        Application application = new Application(accountService, transactionService);
         application.start();
     }
 }
