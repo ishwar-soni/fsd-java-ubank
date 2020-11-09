@@ -1,9 +1,6 @@
 package com.upgrad.ubank;
 
-import com.upgrad.ubank.services.AccountService;
-import com.upgrad.ubank.services.AccountServiceImpl;
-import com.upgrad.ubank.services.TransactionService;
-import com.upgrad.ubank.services.TransactionServiceImpl;
+import com.upgrad.ubank.services.*;
 
 import java.util.Scanner;
 
@@ -207,8 +204,7 @@ public class Application {
 
     public static void main(String[] args) {
         AccountService accountService = new AccountServiceImpl();
-        TransactionServiceImpl transactionService = new TransactionServiceImpl();
-        transactionService.setLoggedInSystem("DESKTOP");
+        TransactionService transactionService = new TransactionServiceImplMobile();
         Application application = new Application(accountService, transactionService);
         application.start();
     }
