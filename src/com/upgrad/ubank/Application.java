@@ -157,7 +157,12 @@ public class Application {
         System.out.print("Amount: ");
         int amount = Integer.parseInt(scan.nextLine());
 
-        System.out.println("Withdraw " + amount + " rs from account " + loggedInAccountNo);
+        Account account = accountService.withdraw(loggedInAccountNo, amount);
+        if (account == null) {
+            System.out.println("Could not withdraw from account.");
+        } else {
+            System.out.println("Money successfully withdrawn from account.");
+        }
     }
 
     private void getAccountStatement() {
