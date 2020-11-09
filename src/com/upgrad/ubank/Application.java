@@ -72,20 +72,12 @@ public class Application {
         System.out.println("********Login********");
         System.out.println("*********************");
 
-        System.out.print("Account No.:");
-        int accountNo = Integer.parseInt(scan.nextLine());
-
-        System.out.print("Password:");
-        String password = scan.nextLine();
-
-        Account account = new Account();
-        account.setAccountNo(accountNo);
-        account.setPassword(password);
+        Account account = getAccountFromUser();
 
         if (accountService.login(account)) {
             System.out.println("You are logged in.");
             isLoggedIn = true;
-            loggedInAccountNo = accountNo;
+            loggedInAccountNo = account.getAccountNo();
         } else {
             System.out.println("Incorrect Username / Password");
         }
@@ -105,6 +97,18 @@ public class Application {
         System.out.println("******Register*******");
         System.out.println("*********************");
 
+        Account account = getAccountFromUser();
+
+        if (accountService.register(account)) {
+            System.out.println("You are logged in.");
+            isLoggedIn = true;
+            loggedInAccountNo = account.getAccountNo();
+        } else {
+            System.out.println("User already exists.");
+        }
+    }
+
+    private Account getAccountFromUser() {
         System.out.print("Account No.:");
         int accountNo = Integer.parseInt(scan.nextLine());
 
@@ -114,14 +118,7 @@ public class Application {
         Account account = new Account();
         account.setAccountNo(accountNo);
         account.setPassword(password);
-
-        if (accountService.register(account)) {
-            System.out.println("You are logged in.");
-            isLoggedIn = true;
-            loggedInAccountNo = accountNo;
-        } else {
-            System.out.println("User already exists.");
-        }
+        return account;
     }
 
     private void getAccount () {
