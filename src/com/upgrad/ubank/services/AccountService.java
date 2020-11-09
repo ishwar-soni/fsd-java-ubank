@@ -9,6 +9,4 @@ public interface AccountService {
     Account getAccount (int accountNo);
     Account deposit (int accountNo, int amount);
     Account withdraw (int accountNo, int amount);
-    Transaction createTransaction (Transaction transaction);
-    Transaction[] getTransactions (int accountNo);
 }
