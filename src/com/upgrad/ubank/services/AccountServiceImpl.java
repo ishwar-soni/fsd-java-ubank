@@ -16,27 +16,24 @@ public class AccountServiceImpl implements AccountService {
         counter = 0;
     }
 
-    public boolean login(int accountNo, String password) {
+    public boolean login (Account account) {
         for (int i = 0; i < counter; i++) {
-            if (accountNo == accounts[i].getAccountNo() && password.equals(accounts[i].getPassword())) {
+            if (account.getAccountNo() == accounts[i].getAccountNo() && account.getPassword().equals(accounts[i].getPassword())) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean register(int accountNo, String password) {
+    public boolean register (Account account) {
         for (int i = 0; i < counter; i++) {
-            if (accountNo == accounts[i].getAccountNo()) {
+            if (account.getAccountNo() == accounts[i].getAccountNo()) {
                 return false;
             }
         }
 
-        Account temp = new Account();
-        temp.setAccountNo(accountNo);
-        temp.setPassword(password);
-        temp.setBalance(0);
-        accounts[counter++] = temp;
+        account.setBalance(0);
+        accounts[counter++] = account;
         return true;
     }
 

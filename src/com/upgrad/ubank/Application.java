@@ -77,7 +77,11 @@ public class Application {
         System.out.print("Password:");
         String password = scan.nextLine();
 
-        if (accountService.login(accountNo, password)) {
+        Account account = new Account();
+        account.setAccountNo(accountNo);
+        account.setPassword(password);
+
+        if (accountService.login(account)) {
             System.out.println("You are logged in.");
             isLoggedIn = true;
             loggedInAccountNo = accountNo;
@@ -106,7 +110,11 @@ public class Application {
         System.out.print("Password:");
         String password = scan.nextLine();
 
-        if (accountService.register(accountNo, password)) {
+        Account account = new Account();
+        account.setAccountNo(accountNo);
+        account.setPassword(password);
+
+        if (accountService.register(account)) {
             System.out.println("You are logged in.");
             isLoggedIn = true;
             loggedInAccountNo = accountNo;
