@@ -81,11 +81,15 @@ public class Application {
                 System.out.println("You are logged in.");
                 isLoggedIn = true;
                 loggedInAccountNo = account.getAccountNo();
-            } else {
-                System.out.println("Incorrect Username / Password");
             }
         } catch (NullPointerException e) {
             System.out.println(e.getMessage());
+        } catch (Exception e) {
+            if (e.getMessage().equals("Incorrect AccountNo")) {
+                System.out.println("Account No doesn't exist.");
+            } else if (e.getMessage().equals("Incorrect Password")) {
+                System.out.println("Password is incorrect.");
+            }
         }
     }
 

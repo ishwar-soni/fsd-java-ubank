@@ -3,7 +3,7 @@ package com.upgrad.ubank.services;
 import com.upgrad.ubank.dtos.Account;
 
 public interface AccountService {
-    boolean login (Account account);
+    boolean login (Account account) throws Exception;
     boolean register (Account account);
     Account getAccount (int accountNo);
     Account deposit (int accountNo, int amount);

@@ -19,16 +19,18 @@ public class AccountServiceImpl implements AccountService {
         this.transactionService = transactionService;
     }
 
-    public boolean login (Account account) {
+    public boolean login (Account account) throws Exception {
         if (account == null) {
             throw new NullPointerException("Account object was null");
         }
         for (int i = 0; i < counter; i++) {
             if (account.getAccountNo() == accounts[i].getAccountNo() && account.getPassword().equals(accounts[i].getPassword())) {
                 return true;
+            } else if (account.getAccountNo() == accounts[i].getAccountNo() && !account.getPassword().equals(accounts[i].getPassword())) {
+                throw new Exception("Incorrect Password");
             }
         }
-        return false;
+        throw new Exception("Incorrect AccountNo");
     }
 
     public boolean register (Account account) {
