@@ -76,12 +76,16 @@ public class Application {
 
         Account account = getAccountFromUser();
 
-        if (accountService.login(account)) {
-            System.out.println("You are logged in.");
-            isLoggedIn = true;
-            loggedInAccountNo = account.getAccountNo();
-        } else {
-            System.out.println("Incorrect Username / Password");
+        try {
+            if (accountService.login(account)) {
+                System.out.println("You are logged in.");
+                isLoggedIn = true;
+                loggedInAccountNo = account.getAccountNo();
+            } else {
+                System.out.println("Incorrect Username / Password");
+            }
+        } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -119,6 +123,7 @@ public class Application {
             System.out.println("You entered: " + accountNo);
         } catch (NumberFormatException e) {
             System.out.println("Account number should be in numeric form.");
+            return null;
         } finally {
             System.out.println("Current account no: " + accountNo);
         }
