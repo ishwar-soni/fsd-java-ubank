@@ -117,7 +117,7 @@ public class Application {
         try {
             accountNo = Integer.parseInt(scan.nextLine());
             System.out.println("You entered: " + accountNo);
-        } catch (NullPointerException e) {
+        } catch (NumberFormatException e) {
             System.out.println("Account number should be in numeric form.");
         } finally {
             System.out.println("Current account no: " + accountNo);
