@@ -2,6 +2,8 @@ package com.upgrad.ubank;
 
 import com.upgrad.ubank.dtos.Account;
 import com.upgrad.ubank.dtos.Transaction;
+import com.upgrad.ubank.exceptions.AccountNotFoundException;
+import com.upgrad.ubank.exceptions.IncorrectPasswordException;
 import com.upgrad.ubank.services.*;
 
 import java.util.Scanner;
@@ -83,13 +85,14 @@ public class Application {
                 loggedInAccountNo = account.getAccountNo();
             }
         } catch (NullPointerException e) {
+            //code to execute when account object was null
             System.out.println(e.getMessage());
-        } catch (Exception e) {
-            if (e.getMessage().equals("Incorrect AccountNo")) {
-                System.out.println("Account No doesn't exist.");
-            } else if (e.getMessage().equals("Incorrect Password")) {
-                System.out.println("Password is incorrect.");
-            }
+        } catch (AccountNotFoundException e) {
+            //code to execute when account no was not found
+            System.out.println(e.getMessage());
+        } catch (IncorrectPasswordException e) {
+            //code to execute when password is incorrect.
+            System.out.println(e.getMessage());
         }
     }
 

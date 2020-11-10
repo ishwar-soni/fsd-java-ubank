@@ -2,6 +2,8 @@ package com.upgrad.ubank.services;
 
 import com.upgrad.ubank.dtos.Account;
 import com.upgrad.ubank.dtos.Transaction;
+import com.upgrad.ubank.exceptions.AccountNotFoundException;
+import com.upgrad.ubank.exceptions.IncorrectPasswordException;
 
 public class AccountServiceImpl implements AccountService {
     //Account array to store account objects for the application, later in the course
@@ -19,7 +21,7 @@ public class AccountServiceImpl implements AccountService {
         this.transactionService = transactionService;
     }
 
-    public boolean login (Account account) throws Exception {
+    public boolean login (Account account) throws AccountNotFoundException, IncorrectPasswordException {
         if (account == null) {
             throw new NullPointerException("Account object was null");
         }
@@ -27,10 +29,10 @@ public class AccountServiceImpl implements AccountService {
             if (account.getAccountNo() == accounts[i].getAccountNo() && account.getPassword().equals(accounts[i].getPassword())) {
                 return true;
             } else if (account.getAccountNo() == accounts[i].getAccountNo() && !account.getPassword().equals(accounts[i].getPassword())) {
-                throw new Exception("Incorrect Password");
+                throw new IncorrectPasswordException("Password is not correct.");
             }
         }
-        throw new Exception("Incorrect AccountNo");
+        throw new AccountNotFoundException("Account no doesn't exist.");
     }
 
     public boolean register (Account account) {
