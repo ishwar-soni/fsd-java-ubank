@@ -112,7 +112,16 @@ public class Application {
 
     private Account getAccountFromUser() {
         System.out.print("Account No.:");
-        int accountNo = Integer.parseInt(scan.nextLine());
+        int accountNo = 0;
+
+        try {
+            accountNo = Integer.parseInt(scan.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Account number should be in numeric form.");
+            return null;
+        } finally {
+            System.out.println("Current account no: " + accountNo);
+        }
 
         System.out.print("Password:");
         String password = scan.nextLine();
