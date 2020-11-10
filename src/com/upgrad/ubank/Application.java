@@ -2,6 +2,7 @@ package com.upgrad.ubank;
 
 import com.upgrad.ubank.dtos.Account;
 import com.upgrad.ubank.dtos.Transaction;
+import com.upgrad.ubank.exceptions.AccountAlreadyRegisteredException;
 import com.upgrad.ubank.exceptions.AccountNotFoundException;
 import com.upgrad.ubank.exceptions.IncorrectPasswordException;
 import com.upgrad.ubank.services.*;
@@ -112,12 +113,18 @@ public class Application {
 
         Account account = getAccountFromUser();
 
-        if (accountService.register(account)) {
-            System.out.println("You are logged in.");
-            isLoggedIn = true;
-            loggedInAccountNo = account.getAccountNo();
-        } else {
-            System.out.println("User already exists.");
+        try {
+            if (accountService.register(account)) {
+                System.out.println("You are logged in.");
+                isLoggedIn = true;
+                loggedInAccountNo = account.getAccountNo();
+            }
+        } catch (NullPointerException e) {
+            //code to execute when account object was null
+            System.out.println(e.getMessage());
+        } catch (AccountAlreadyRegisteredException e) {
+            //code to execute when account already registered
+            System.out.println(e.getMessage());
         }
     }
 
