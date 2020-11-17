@@ -8,6 +8,8 @@ import com.upgrad.ubank.exceptions.IncorrectPasswordException;
 import com.upgrad.ubank.exceptions.InsufficientBalanceException;
 
 public class AccountServiceImpl implements AccountService {
+
+    private static AccountServiceImpl instance;
     //Account array to store account objects for the application, later in the course
     //this array will be replaced with database
     private Account[] accounts;
@@ -17,10 +19,17 @@ public class AccountServiceImpl implements AccountService {
 
     private TransactionService transactionService;
 
-    public AccountServiceImpl (TransactionService transactionService) {
+    private AccountServiceImpl (TransactionService transactionService) {
         accounts = new Account[100];
         counter = 0;
         this.transactionService = transactionService;
+    }
+
+    public static AccountServiceImpl getInstance() {
+        if (instance == null) {
+            instance = new AccountServiceImpl(TransactionServiceImpl.getInstance());
+        }
+        return instance;
     }
 
     public boolean login (Account account) throws AccountNotFoundException, IncorrectPasswordException {
