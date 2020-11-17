@@ -4,12 +4,21 @@ import com.upgrad.ubank.dtos.Transaction;
 
 public class TransactionServiceImpl implements TransactionService{
 
+    private static TransactionServiceImpl instance;
+
     private Transaction[] transactions;
     private int counter;
 
-    public TransactionServiceImpl () {
+    private TransactionServiceImpl () {
         transactions = new Transaction[100];
         counter = 0;
+    }
+
+    public static TransactionServiceImpl getInstance() {
+        if (instance == null) {
+            instance = new TransactionServiceImpl();
+        }
+        return instance;
     }
 
     @Override

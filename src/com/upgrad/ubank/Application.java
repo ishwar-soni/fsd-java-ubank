@@ -266,7 +266,7 @@ public class Application {
     }
 
     public static void main(String[] args) {
-        TransactionService transactionService = new TransactionServiceImpl();
+        TransactionService transactionService = TransactionServiceImpl.getInstance();
         AccountService accountService = new AccountServiceImpl(transactionService);
         Application application = new Application(accountService, transactionService);
         application.start();
