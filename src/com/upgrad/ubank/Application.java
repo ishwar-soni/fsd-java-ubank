@@ -270,6 +270,12 @@ public class Application {
         TransactionService transactionService = serviceFactory.getTransactionService();
         AccountService accountService = serviceFactory.getAccountService();
         Application application = new Application(accountService, transactionService);
+
+        try {
+            Class.forName("com.upgrad.ubank.services.EmailNotificationService");
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
         application.start();
     }
 }
