@@ -6,8 +6,10 @@ import com.upgrad.ubank.exceptions.AccountAlreadyRegisteredException;
 import com.upgrad.ubank.exceptions.AccountNotFoundException;
 import com.upgrad.ubank.exceptions.IncorrectPasswordException;
 import com.upgrad.ubank.exceptions.InsufficientBalanceException;
+import com.upgrad.ubank.interfaces.Observer;
+import com.upgrad.ubank.interfaces.Subject;
 
-public class AccountServiceImpl implements AccountService {
+public class AccountServiceImpl implements AccountService, Subject {
 
     private static AccountServiceImpl instance;
     //Account array to store account objects for the application, later in the course
@@ -17,18 +19,21 @@ public class AccountServiceImpl implements AccountService {
     //counter is used to track how many accounts are present in the account array
     private int counter;
 
-    private TransactionService transactionService;
+    private Observer[] observers;
+    private int counterObservers;
 
-    private AccountServiceImpl (TransactionService transactionService) {
+    private AccountServiceImpl () {
         accounts = new Account[100];
         counter = 0;
-        this.transactionService = transactionService;
+
+        observers = new Observer[100];
+        counterObservers = 0;
     }
 
     public static AccountServiceImpl getInstance() {
         if (instance == null) {
             ServiceFactory serviceFactory = new ServiceFactory();
-            instance = new AccountServiceImpl(serviceFactory.getTransactionService());
+            instance = new AccountServiceImpl();
         }
         return instance;
     }
@@ -83,7 +88,7 @@ public class AccountServiceImpl implements AccountService {
         transaction.setDate("DD/MM/YYYY");
         transaction.setAction("Deposit ");
         transaction.setAmount(amount);
-        System.out.println(transactionService.createTransaction(transaction));
+        notifyObservers(transaction);
 
         return account;
     }
@@ -108,8 +113,39 @@ public class AccountServiceImpl implements AccountService {
         transaction.setDate("DD/MM/YYYY");
         transaction.setAction("Withdraw");
         transaction.setAmount(amount);
-        System.out.println(transactionService.createTransaction(transaction));
+        notifyObservers(transaction);
 
         return account;
+    }
+
+    @Override
+    public void registerObserver(Observer observer) {
+        observers[counterObservers++] = observer;
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        int i = 0;
+        for (; i<counterObservers; i++) {
+            if (observers[i].equals(observer)) {
+                break;
+            }
+        }
+        if (i < counterObservers) {
+            for (; i<counterObservers; i++) {
+                observers[i] = observers[i+1];
+            }
+            counterObservers--;
+        }
+    }
+
+    @Override
+    public void notifyObservers(Object data) {
+        for (Observer observer: observers) {
+            if (observer == null) {
+                break;
+            }
+            observer.update(data);
+        }
     }
 }

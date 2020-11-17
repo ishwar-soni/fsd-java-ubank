@@ -1,17 +1,25 @@
 package com.upgrad.ubank.services;
 
 import com.upgrad.ubank.dtos.Transaction;
+import com.upgrad.ubank.interfaces.Observer;
+import com.upgrad.ubank.interfaces.Subject;
 
-public class TransactionServiceImpl implements TransactionService{
+public class TransactionServiceImpl implements TransactionService, Observer {
 
-    private static TransactionServiceImpl instance;
+    private static TransactionServiceImpl instance = new TransactionServiceImpl();
 
     private Transaction[] transactions;
     private int counter;
+    private Subject accountServiceSubject;
+    private ServiceFactory serviceFactory;
 
     private TransactionServiceImpl () {
         transactions = new Transaction[100];
         counter = 0;
+
+        serviceFactory = new ServiceFactory();
+        accountServiceSubject = (Subject) serviceFactory.getAccountService();
+        accountServiceSubject.registerObserver(this);
     }
 
     public static TransactionServiceImpl getInstance() {
@@ -37,5 +45,13 @@ public class TransactionServiceImpl implements TransactionService{
             }
         }
         return temp;
+    }
+
+    @Override
+    public void update(Object data) {
+        if (data instanceof Transaction) {
+            Transaction temp = (Transaction) data;
+            createTransaction(temp);
+        }
     }
 }
