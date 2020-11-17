@@ -27,7 +27,8 @@ public class AccountServiceImpl implements AccountService {
 
     public static AccountServiceImpl getInstance() {
         if (instance == null) {
-            instance = new AccountServiceImpl(TransactionServiceImpl.getInstance());
+            ServiceFactory serviceFactory = new ServiceFactory();
+            instance = new AccountServiceImpl(serviceFactory.getTransactionService());
         }
         return instance;
     }
