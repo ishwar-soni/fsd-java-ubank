@@ -228,7 +228,12 @@ public class Application {
         System.out.println("**Account Statement**");
         System.out.println("*********************");
 
-        Transaction[] transactions = transactionService.getTransactions(loggedInAccountNo);
+        Transaction[] transactions = new Transaction[0];
+        try {
+            transactions = transactionService.getTransactions(loggedInAccountNo);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         if (transactions == null) {
             System.out.println("This feature is not available for mobile");
             return;

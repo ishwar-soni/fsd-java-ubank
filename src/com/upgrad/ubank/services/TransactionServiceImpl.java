@@ -1,25 +1,31 @@
 package com.upgrad.ubank.services;
 
+import com.upgrad.ubank.dao.DAOFactory;
+import com.upgrad.ubank.dao.TransactionDAO;
+
 import com.upgrad.ubank.dtos.Transaction;
 import com.upgrad.ubank.interfaces.Observer;
 import com.upgrad.ubank.interfaces.Subject;
+
+import java.sql.SQLException;
 
 public class TransactionServiceImpl implements TransactionService, Observer {
 
     private static TransactionServiceImpl instance = new TransactionServiceImpl();
 
-    private Transaction[] transactions;
-    private int counter;
     private Subject accountServiceSubject;
     private ServiceFactory serviceFactory;
 
-    private TransactionServiceImpl () {
-        transactions = new Transaction[100];
-        counter = 0;
+    private DAOFactory daoFactory;
+    private TransactionDAO transactionDAO;
 
+    private TransactionServiceImpl () {
         serviceFactory = new ServiceFactory();
         accountServiceSubject = (Subject) serviceFactory.getAccountService();
         accountServiceSubject.registerObserver(this);
+
+        daoFactory = new DAOFactory();
+        transactionDAO = daoFactory.getTransactionDAO();
     }
 
     public static TransactionServiceImpl getInstance() {
@@ -30,19 +36,23 @@ public class TransactionServiceImpl implements TransactionService, Observer {
     }
 
     @Override
-    public Transaction createTransaction(Transaction transaction) {
-        transactions[counter++] = transaction;
-        return transaction;
+    public Transaction createTransaction(Transaction transaction) throws Exception {
+        Transaction temp = null;
+        try {
+            temp = transactionDAO.create(transaction);
+        } catch (SQLException e) {
+            throw new Exception("Some unexpected exception occurred");
+        }
+        return temp;
     }
 
     @Override
-    public Transaction[] getTransactions(int accountNo) {
-        Transaction[] temp = new Transaction[100];
-        int counterTemp = 0;
-        for (int i=0; i<counter; i++) {
-            if (transactions[i].getAccountNo() == accountNo) {
-                temp[counterTemp++] = transactions[i];
-            }
+    public Transaction[] getTransactions(int accountNo) throws Exception {
+        Transaction[] temp;
+        try {
+            temp = transactionDAO.findByAccountNo(accountNo);
+        } catch (SQLException e) {
+            throw new Exception("Some unexpected exception occurred.");
         }
         return temp;
     }
@@ -51,7 +61,11 @@ public class TransactionServiceImpl implements TransactionService, Observer {
     public void update(Object data) {
         if (data instanceof Transaction) {
             Transaction temp = (Transaction) data;
-            createTransaction(temp);
+            try {
+                createTransaction(temp);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
