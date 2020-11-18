@@ -12,6 +12,8 @@ import com.upgrad.ubank.interfaces.Observer;
 import com.upgrad.ubank.interfaces.Subject;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class AccountServiceImpl implements AccountService, Subject {
 
@@ -103,7 +105,7 @@ public class AccountServiceImpl implements AccountService, Subject {
 
         Transaction transaction = new Transaction();
         transaction.setAccountNo(accountNo);
-        transaction.setDate("DD/MM/YYYY");
+        transaction.setDate(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         transaction.setAction("Deposit ");
         transaction.setAmount(amount);
         notifyObservers(transaction);
@@ -129,7 +131,7 @@ public class AccountServiceImpl implements AccountService, Subject {
 
         Transaction transaction = new Transaction();
         transaction.setAccountNo(accountNo);
-        transaction.setDate("DD/MM/YYYY");
+        transaction.setDate(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         transaction.setAction("Withdraw");
         transaction.setAmount(amount);
         notifyObservers(transaction);
