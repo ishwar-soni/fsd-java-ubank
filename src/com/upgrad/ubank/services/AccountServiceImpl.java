@@ -1,5 +1,7 @@
 package com.upgrad.ubank.services;
 
+import com.upgrad.ubank.dao.AccountDAO;
+import com.upgrad.ubank.dao.DAOFactory;
 import com.upgrad.ubank.dtos.Account;
 import com.upgrad.ubank.dtos.Transaction;
 import com.upgrad.ubank.exceptions.AccountAlreadyRegisteredException;
@@ -9,25 +11,24 @@ import com.upgrad.ubank.exceptions.InsufficientBalanceException;
 import com.upgrad.ubank.interfaces.Observer;
 import com.upgrad.ubank.interfaces.Subject;
 
+import java.sql.SQLException;
+
 public class AccountServiceImpl implements AccountService, Subject {
 
     private static AccountServiceImpl instance;
-    //Account array to store account objects for the application, later in the course
-    //this array will be replaced with database
-    private Account[] accounts;
-
-    //counter is used to track how many accounts are present in the account array
-    private int counter;
 
     private Observer[] observers;
     private int counterObservers;
 
-    private AccountServiceImpl () {
-        accounts = new Account[100];
-        counter = 0;
+    private DAOFactory daoFactory;
+    private AccountDAO accountDAO;
 
+    private AccountServiceImpl () {
         observers = new Observer[100];
         counterObservers = 0;
+
+        daoFactory = new DAOFactory();
+        accountDAO = daoFactory.getAccountDAO();
     }
 
     public static AccountServiceImpl getInstance() {
@@ -38,50 +39,67 @@ public class AccountServiceImpl implements AccountService, Subject {
         return instance;
     }
 
-    public boolean login (Account account) throws AccountNotFoundException, IncorrectPasswordException {
+    public boolean login (Account account) throws Exception {
         if (account == null) {
             throw new NullPointerException("Account object was null");
         }
-        for (int i = 0; i < counter; i++) {
-            if (account.getAccountNo() == accounts[i].getAccountNo() && account.getPassword().equals(accounts[i].getPassword())) {
-                return true;
-            } else if (account.getAccountNo() == accounts[i].getAccountNo() && !account.getPassword().equals(accounts[i].getPassword())) {
-                throw new IncorrectPasswordException("Password is not correct.");
-            }
+
+        Account temp = null;
+        try {
+            temp = accountDAO.findByAccountNo(account.getAccountNo());
+        } catch (SQLException e) {
+            throw new Exception("Some unexpected exception occurred.");
         }
-        throw new AccountNotFoundException("Account no doesn't exist.");
+
+        if (temp == null) {
+            throw new AccountNotFoundException("Account no doesn't exist.");
+        } else if (!temp.getPassword().equals(account.getPassword())) {
+            throw new IncorrectPasswordException("Password is not correct.");
+        } else {
+            return true;
+        }
     }
 
-    public boolean register (Account account) throws AccountAlreadyRegisteredException {
+    public boolean register (Account account) throws Exception {
         if (account == null) {
             throw new NullPointerException("Account object was null");
         }
-        for (int i = 0; i < counter; i++) {
-            if (account.getAccountNo() == accounts[i].getAccountNo()) {
-                throw new AccountAlreadyRegisteredException("Account no already registered.");
-            }
+        Account temp = null;
+        try {
+            temp = accountDAO.findByAccountNo(account.getAccountNo());
+        } catch (SQLException e) {
+            throw new Exception ("Some unexpected exception occurred");
         }
 
-        account.setBalance(0);
-        accounts[counter++] = account;
-        return true;
+        if (temp != null) {
+            throw new AccountAlreadyRegisteredException("Account no already registered.");
+        } else {
+            accountDAO.create(account);
+            return true;
+        }
     }
 
     @Override
-    public Account getAccount(int accountNo) throws AccountNotFoundException {
-        for (int i=0; i<counter; i++) {
-            if (accounts[i].getAccountNo() == accountNo) {
-                return accounts[i];
-            }
+    public Account getAccount(int accountNo) throws Exception {
+        Account account = null;
+        try {
+            account = accountDAO.findByAccountNo(accountNo);
+        } catch (SQLException e) {
+            throw new Exception("Some unexpected exception occurred.");
         }
-        throw new AccountNotFoundException("Account " + accountNo + " doesn't exists.");
+        if (account == null) {
+            throw new AccountNotFoundException("Account " + accountNo + " doesn't exists.");
+        } else {
+            return account;
+        }
     }
 
     @Override
-    public Account deposit(int accountNo, int amount) throws AccountNotFoundException {
+    public Account deposit(int accountNo, int amount) throws Exception {
         Account account = getAccount(accountNo);
 
         account.setBalance(account.getBalance() + amount);
+        accountDAO.updateBalance(account);
 
         Transaction transaction = new Transaction();
         transaction.setAccountNo(accountNo);
@@ -98,7 +116,7 @@ public class AccountServiceImpl implements AccountService, Subject {
      * 13 July 2020. Please refer the business documents for more information.
      */
     @Override
-    public Account withdraw(int accountNo, int amount) throws AccountNotFoundException, InsufficientBalanceException {
+    public Account withdraw(int accountNo, int amount) throws Exception {
         Account account = getAccount(accountNo);
         if (account == null) {
             return null;
@@ -107,6 +125,7 @@ public class AccountServiceImpl implements AccountService, Subject {
             throw new InsufficientBalanceException("Can't withdraw " + amount + " when balance is " + account.getBalance());
         }
         account.setBalance(account.getBalance() - amount);
+        accountDAO.updateBalance(account);
 
         Transaction transaction = new Transaction();
         transaction.setAccountNo(accountNo);

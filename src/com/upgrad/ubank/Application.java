@@ -86,14 +86,8 @@ public class Application {
                 isLoggedIn = true;
                 loggedInAccountNo = account.getAccountNo();
             }
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             //code to execute when account object was null
-            System.out.println(e.getMessage());
-        } catch (AccountNotFoundException e) {
-            //code to execute when account no was not found
-            System.out.println(e.getMessage());
-        } catch (IncorrectPasswordException e) {
-            //code to execute when password is incorrect.
             System.out.println(e.getMessage());
         }
     }
@@ -120,11 +114,8 @@ public class Application {
                 isLoggedIn = true;
                 loggedInAccountNo = account.getAccountNo();
             }
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             //code to execute when account object was null
-            System.out.println(e.getMessage());
-        } catch (AccountAlreadyRegisteredException e) {
-            //code to execute when account already registered
             System.out.println(e.getMessage());
         }
     }
@@ -164,7 +155,7 @@ public class Application {
 
         try {
             System.out.println(accountService.getAccount(loggedInAccountNo));
-        } catch (AccountNotFoundException e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
@@ -184,7 +175,7 @@ public class Application {
 
         try {
             amount = Integer.parseInt(scan.nextLine());
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             System.out.println("Amount should be in numeric form");
             return;
         }
@@ -193,7 +184,7 @@ public class Application {
         try {
             account = accountService.deposit(loggedInAccountNo, amount);
             System.out.println("Money successfully deposited into account.");
-        } catch (AccountNotFoundException e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
@@ -222,9 +213,7 @@ public class Application {
         try {
             account = accountService.withdraw(loggedInAccountNo, amount);
             System.out.println("Money successfully withdrawn from account.");
-        } catch (AccountNotFoundException e) {
-            System.out.println(e.getMessage());
-        } catch (InsufficientBalanceException e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
