@@ -2,6 +2,7 @@ package com.upgrad.ubank.dao;
 
 import com.upgrad.ubank.db.Database;
 import com.upgrad.ubank.dtos.Account;
+import com.upgrad.ubank.utils.Logger;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -25,6 +26,7 @@ public class AccountDAOImpl implements AccountDAO {
     public Account findByAccountNo(int accountNo) throws SQLException {
         Connection connection = Database.getConnection();
         Statement statement = connection.createStatement();
+        Logger.log("Executing AccountDAOImpl.findByAccountNo() for " + accountNo);
         String sql = "SELECT * FROM account WHERE accountNo = " + accountNo;
         ResultSet resultSet = statement.executeQuery(sql);
 
@@ -43,6 +45,7 @@ public class AccountDAOImpl implements AccountDAO {
     public Account create(Account account) throws SQLException {
         Connection connection = Database.getConnection();
         Statement statement = connection.createStatement();
+        Logger.log("Executing AccountDAOImpl.create() for " + account.getAccountNo());
         String sql = "INSERT INTO account (accountNo, password, balance) VALUES (" +
                 account.getAccountNo() + ", '" +
                 account.getPassword() + "', " +
@@ -58,6 +61,7 @@ public class AccountDAOImpl implements AccountDAO {
     public Account updateBalance(Account account) throws SQLException {
         Connection connection = Database.getConnection();
         Statement statement = connection.createStatement();
+        Logger.log("Executing AccountDAOImpl.updateBalance() for " + account.getAccountNo());
         String sql = "UPDATE account SET balance = '" +
                 account.getBalance()+ "' WHERE accountNo = " +
                 account.getAccountNo();

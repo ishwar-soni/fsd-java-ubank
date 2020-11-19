@@ -3,6 +3,7 @@ package com.upgrad.ubank.services;
 import com.upgrad.ubank.dtos.Transaction;
 import com.upgrad.ubank.interfaces.Observer;
 import com.upgrad.ubank.interfaces.Subject;
+import com.upgrad.ubank.utils.Logger;
 
 public class EmailNotificationService implements NotificationService, Observer {
 
@@ -25,7 +26,7 @@ public class EmailNotificationService implements NotificationService, Observer {
 
     @Override
     public void sendNotification(String message) {
-        System.out.println(message);
+        Logger.log(message);
     }
 
     @Override
