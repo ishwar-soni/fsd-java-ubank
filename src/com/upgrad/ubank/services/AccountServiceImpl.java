@@ -14,20 +14,20 @@ import com.upgrad.ubank.interfaces.Subject;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
+import java.util.List;
 
 public class AccountServiceImpl implements AccountService, Subject {
 
     private static AccountServiceImpl instance;
 
-    private Observer[] observers;
-    private int counterObservers;
+    private List<Observer> observers;
 
     private DAOFactory daoFactory;
     private AccountDAO accountDAO;
 
     private AccountServiceImpl () {
-        observers = new Observer[100];
-        counterObservers = 0;
+        observers = new LinkedList<>();
 
         daoFactory = new DAOFactory();
         accountDAO = daoFactory.getAccountDAO();
@@ -141,31 +141,17 @@ public class AccountServiceImpl implements AccountService, Subject {
 
     @Override
     public void registerObserver(Observer observer) {
-        observers[counterObservers++] = observer;
+        observers.add(observer);
     }
 
     @Override
     public void removeObserver(Observer observer) {
-        int i = 0;
-        for (; i<counterObservers; i++) {
-            if (observers[i].equals(observer)) {
-                break;
-            }
-        }
-        if (i < counterObservers) {
-            for (; i<counterObservers; i++) {
-                observers[i] = observers[i+1];
-            }
-            counterObservers--;
-        }
+        observers.remove(observer);
     }
 
     @Override
     public void notifyObservers(Object data) {
         for (Observer observer: observers) {
-            if (observer == null) {
-                break;
-            }
             observer.update(data);
         }
     }
