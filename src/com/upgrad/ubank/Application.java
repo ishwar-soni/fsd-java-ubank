@@ -8,6 +8,7 @@ import com.upgrad.ubank.exceptions.IncorrectPasswordException;
 import com.upgrad.ubank.exceptions.InsufficientBalanceException;
 import com.upgrad.ubank.services.*;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Application {
@@ -228,7 +229,7 @@ public class Application {
         System.out.println("**Account Statement**");
         System.out.println("*********************");
 
-        Transaction[] transactions = new Transaction[0];
+        List<Transaction> transactions = null;
         try {
             transactions = transactionService.getTransactions(loggedInAccountNo);
         } catch (Exception e) {
@@ -237,7 +238,7 @@ public class Application {
         if (transactions == null) {
             System.out.println("This feature is not available for mobile");
             return;
-        } else if (transactions[0] == null) {
+        } else if (transactions.isEmpty()) {
             System.out.println("No transaction exists for you.");
             return;
         }

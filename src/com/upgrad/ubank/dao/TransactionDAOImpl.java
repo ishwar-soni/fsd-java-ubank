@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TransactionDAOImpl implements TransactionDAO {
 
@@ -35,9 +37,8 @@ public class TransactionDAOImpl implements TransactionDAO {
     }
 
     @Override
-    public Transaction[] findByAccountNo(int accountNo) throws SQLException {
-        Transaction[] transactions = new Transaction[100];
-        int counter = 0;
+    public List<Transaction> findByAccountNo(int accountNo) throws SQLException {
+        List<Transaction> transactions = new ArrayList<>();
 
         Connection connection = Database.getConnection();
         Statement statement = connection.createStatement();
@@ -50,7 +51,7 @@ public class TransactionDAOImpl implements TransactionDAO {
             temp.setDate(resultSet.getString("date_"));
             temp.setAction(resultSet.getString("action"));
             temp.setAmount(resultSet.getInt("amount"));
-            transactions[counter++] = temp;
+            transactions.add(temp);
         }
 
         return transactions;
@@ -63,7 +64,7 @@ public class TransactionDAOImpl implements TransactionDAO {
         transactionDAO.create(transaction1);
         transactionDAO.create(transaction2);
 
-        Transaction[] transactions = transactionDAO.findByAccountNo(400001);
+        List<Transaction> transactions = transactionDAO.findByAccountNo(400001);
         for (Transaction transaction: transactions) {
             if (transaction == null) {
                 break;
