@@ -8,6 +8,9 @@ import com.upgrad.ubank.exceptions.IncorrectPasswordException;
 import com.upgrad.ubank.exceptions.InsufficientBalanceException;
 import com.upgrad.ubank.services.*;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -242,11 +245,22 @@ public class Application {
             System.out.println("No transaction exists for you.");
             return;
         }
+
         for (Transaction transaction: transactions) {
-            if (transaction == null) {
-                break;
-            }
             System.out.println(transaction);
+        }
+
+        System.out.print("Download? Y or N: ");
+        String response = scan.nextLine();
+        if (response.equals("Y")) {
+            try (BufferedWriter br = new BufferedWriter(new FileWriter("C:\\Users\\ishwar.soni\\Downloads\\Account Statement.txt"))) {
+                for (Transaction transaction: transactions) {
+                    br.write(transaction.toString());
+                    br.newLine();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
