@@ -5,6 +5,7 @@ import com.upgrad.ubank.dtos.Transaction;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class StreamAPI {
     public static List<Transaction> transactions = new ArrayList<>();
@@ -37,6 +38,15 @@ public class StreamAPI {
         System.out.println(sum);
     }
 
+    public static List<Integer> getSortedDepositAmountByAccountNo (int accountNo) {
+        return transactions.stream()
+                .filter(t -> t.getAccountNo() == accountNo)
+                .filter(t -> t.getAction().equals("DEPOSIT"))
+                .map(Transaction::getAmount)
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
     public static void main(String[] args) {
         transactions.add(new Transaction(1234, "29/07/2020", "DEPOSIT", 10000));
         transactions.add(new Transaction(1234, "29/07/2020", "WITHDRAW", 5000));
@@ -51,6 +61,7 @@ public class StreamAPI {
         //filterByAction();
         //printAmounts();
         //printTransactionByIncreasingAmount();
-        printAmountSum();
+        //printAmountSum();
+        System.out.println(getSortedDepositAmountByAccountNo(1234));
     }
 }
