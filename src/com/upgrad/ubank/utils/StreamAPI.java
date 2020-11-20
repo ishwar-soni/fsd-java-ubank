@@ -31,6 +31,12 @@ public class StreamAPI {
                 .forEach(System.out::println);
     }
 
+    public static void printAmountSum () {
+        int sum = transactions.stream().map(Transaction::getAmount)
+                .reduce(0, Integer::sum);
+        System.out.println(sum);
+    }
+
     public static void main(String[] args) {
         transactions.add(new Transaction(1234, "29/07/2020", "DEPOSIT", 10000));
         transactions.add(new Transaction(1234, "29/07/2020", "WITHDRAW", 5000));
@@ -44,6 +50,7 @@ public class StreamAPI {
         //printTransactions();
         //filterByAction();
         //printAmounts();
-        printTransactionByIncreasingAmount();
+        //printTransactionByIncreasingAmount();
+        printAmountSum();
     }
 }
