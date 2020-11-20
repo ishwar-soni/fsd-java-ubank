@@ -1,6 +1,8 @@
 package com.upgrad.ubank.dtos;
 
-public class Transaction {
+import java.io.Serializable;
+
+public class Transaction implements Serializable {
     private int accountNo;
     private String date;
     private String action;
